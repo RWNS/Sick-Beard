@@ -1209,6 +1209,7 @@ class ConfigNotifications:
                           use_notifo=None, notifo_notify_onsnatch=None, notifo_notify_ondownload=None, notifo_username=None, notifo_apisecret=None,
                           use_boxcar=None, boxcar_notify_onsnatch=None, boxcar_notify_ondownload=None, boxcar_username=None,
                           use_pushover=None, pushover_notify_onsnatch=None, pushover_notify_ondownload=None, pushover_userkey=None,
+                          use_pushalot=None, pushalot_notify_onsnatch=None, pushalot_notify_ondownload=None, pushalot_authorizationtoken=None,
                           use_libnotify=None, libnotify_notify_onsnatch=None, libnotify_notify_ondownload=None,
                           use_nmj=None, nmj_host=None, nmj_database=None, nmj_mount=None, use_synoindex=None,
                           use_nmjv2=None, nmjv2_host=None, nmjv2_dbloc=None, nmjv2_database=None,
@@ -1354,6 +1355,22 @@ class ConfigNotifications:
         else:
             use_pushover = 0
 
+        if use_pushalot == "on":
+            use_pushalot = 1
+        else:
+            use_pushalot = 0
+
+        if pushalot_notify_onsnatch == "on":
+            pushalot_notify_onsnatch = 1
+        else:
+            pushalot_notify_onsnatch = 0
+
+        if pushalot_notify_ondownload == "on":
+            pushalot_notify_ondownload = 1
+        else:
+            pushalot_notify_ondownload = 0
+
+
         if use_nmj == "on":
             use_nmj = 1
         else:
@@ -1459,6 +1476,11 @@ class ConfigNotifications:
         sickbeard.PUSHOVER_NOTIFY_ONSNATCH = pushover_notify_onsnatch
         sickbeard.PUSHOVER_NOTIFY_ONDOWNLOAD = pushover_notify_ondownload
         sickbeard.PUSHOVER_USERKEY = pushover_userkey
+
+        sickbeard.USE_PUSHALOT = use_pushalot
+        sickbeard.PUSHALOT_NOTIFY_ONSNATCH = pushalot_notify_onsnatch
+        sickbeard.PUSHALOT_NOTIFY_ONDOWNLOAD = pushalot_notify_ondownload
+        sickbeard.PUSHALOT_AUTHORIZATIONTOKEN = pushalot_authorizationtoken
 
         sickbeard.USE_LIBNOTIFY = use_libnotify == "on"
         sickbeard.LIBNOTIFY_NOTIFY_ONSNATCH = libnotify_notify_onsnatch == "on"
@@ -2294,6 +2316,16 @@ class Home:
             return "Test NMA notice sent successfully"
         else:
             return "Test NMA notice failed"
+
+    @cherrypy.expose
+    def testPushalot(self, authorizationToken=None):
+        cherrypy.response.headers['Cache-Control'] = "max-age=0,no-cache,no-store"
+
+        result = notifiers.pushalot_notifier.test_notify(authorizationToken)
+        if result:
+            return "Pushalot notification succeeded. Check your Pushalot clients to make sure it worked"
+        else:
+            return "Error sending Pushalot notification"
 
     @cherrypy.expose
     def shutdown(self, pid=None):

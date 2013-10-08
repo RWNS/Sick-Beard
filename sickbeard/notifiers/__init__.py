@@ -30,6 +30,7 @@ import prowl
 import notifo
 from . import libnotify
 import pushover
+import pushalot
 import boxcar
 import nma
 
@@ -51,6 +52,7 @@ prowl_notifier = prowl.ProwlNotifier()
 notifo_notifier = notifo.NotifoNotifier()
 libnotify_notifier = libnotify.LibnotifyNotifier()
 pushover_notifier = pushover.PushoverNotifier()
+pushalot_notifier = pushalot.PushalotNotifier()
 boxcar_notifier = boxcar.BoxcarNotifier()
 nma_notifier = nma.NMA_Notifier()
 # online
@@ -69,6 +71,7 @@ notifiers = [
     prowl_notifier,
     notifo_notifier,
     pushover_notifier,
+    pushalot_notifier,
     boxcar_notifier,
     nma_notifier,
     twitter_notifier,

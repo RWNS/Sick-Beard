@@ -1,0 +1,29 @@
+From 5e954c5409e9149c98faf17d7b7cf6c74e0aa63c Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Maciej=20Olesi=C5=84ski?= <usz@MBP.local>
+Date: Wed, 1 May 2013 19:03:31 +0200
+Subject: [PATCH 2/2] Fix device notification configuration template.
+
+---
+ .../interfaces/default/config_notifications.tmpl   |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/gui/slick/interfaces/default/config_notifications.tmpl b/gui/slick/interfaces/default/config_notifications.tmpl
+index 9922a98..aab3fad 100644
+--- a/gui/slick/interfaces/default/config_notifications.tmpl
++++ b/gui/slick/interfaces/default/config_notifications.tmpl
+@@ -935,10 +935,9 @@
+                     </fieldset>
+                 </div><!-- /nma component-group //-->
+ 
+-                <div class="component-group clearfix">
++                <div class="component-group clearfix">
+                     <div class="component-group-desc">
+-                        <img class="notifier-icon" src="$sbRoot/images/notifiers/pushalot.png" alt="" title="Pushalot" />
+-                        <h3><a href="https://pushalot.com" onclick="window.open(this.href, '_blank'); return false;">Pushalot</a></h3>
++                        <h3><a href="https://pushalot.com" onclick="window.open(this.href, '_blank'); return false;"><img src="$sbRoot/images/notifiers/pushalot.png" alt="" title="Pushalot"/> Pushalot </a></h3>
+                         <p>Pushalot is a platform for receiving custom push notifications to connected devices running Windows Phone or Windows 8.</p>
+                     </div>
+                     <fieldset class="component-group-list">
+-- 
+1.7.9.6 (Apple Git-31.1)
+

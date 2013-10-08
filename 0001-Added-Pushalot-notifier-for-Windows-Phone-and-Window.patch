@@ -1,0 +1,387 @@
+From f340ce07f17cac8b7a607c067756c091cdce4448 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Maciej=20Olesi=C5=84ski?= <usz@MBP.local>
+Date: Wed, 1 May 2013 18:41:46 +0200
+Subject: [PATCH 1/2] Added Pushalot notifier for Windows Phone and Windows 8.
+
+---
+ gui/slick/images/notifiers/pushalot.png            |  Bin 0 -> 927 bytes
+ .../interfaces/default/config_notifications.tmpl   |   55 ++++++++++++
+ gui/slick/js/configNotifications.js                |    6 ++
+ sickbeard/__init__.py                              |   21 +++++
+ sickbeard/notifiers/__init__.py                    |    3 +
+ sickbeard/notifiers/pushalot.py                    |   91 ++++++++++++++++++++
+ sickbeard/webserve.py                              |   39 ++++++++-
+ 7 files changed, 214 insertions(+), 1 deletion(-)
+ create mode 100644 gui/slick/images/notifiers/pushalot.png
+ create mode 100644 sickbeard/notifiers/pushalot.py
+
+diff --git a/gui/slick/images/notifiers/pushalot.png b/gui/slick/images/notifiers/pushalot.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..f1d9008c1e6078ebc2275fe1b28961fa1143ee70
+GIT binary patch
+literal 927
+zcmV;Q17Q4#P)<h;3K|Lk000e1NJLTq000;O000;W1^@s6;CDUv0000WV@Og>004R>
+z004l5008;`004mK004C`008P>0026e000+ooVrmw00004XF*Lt006O%3;baP00009
+za7bBm000ib000ib0l1NC?EnA(8gxZibW?9;ba!ELWdKlNX>N2bPDNB8b~7$DE-^4L
+z^m3s900QqxL_t(YOP!U^OH@%5$7dJ)SY?To2~lk;s$~%^q=iI8qAj9L5fMdE`42?3
+zs)a}`A|g<nQKK|e$Sgri&7U#jPe^AROUD^)6m!P;dHbH@y_ff99y3!1J}~#3@A;nh
+z?z``eEmPEdvF!r4!Fw<bRwZuG4DNwKDbGF7Q~+LrC=gkQfoiZ<wr36q&w?djWtNE*
+zP$q4x1A;3cE*mth-;WDVpiZoYJ&fCL7cIj_Od3fN+>v(XK%oSrnSY(UEE0*RNG6je
+z;)#gpnkX}AB{Za5+HM3AJ3&ASaK*>Opu0l2ypLeC&W7QLUyS{H3Z95?G{Cu7d`&pL
+z4_MneeAGCEwyQ|m^ML16aP({wGl2%vl@gKIvS{qzrwzI$E~aS+PoSPXq^?Gp?*L&+
+z&Mr1-F>Q<58n?ezn>P;Z$H1W0g(C}mCu;3oe5bUu-9<Fu8YSACr?iN!q@g!Y_?A0(
+zJ^rgw513x4<{X)JjFxcD(X&<j@V(OgZO)TQUqJ&Lv~bNn=HhyEN!YtLv*6Rn8PPm+
+zNQoJ>|MWbJd3*OJ?xmW``%vXuX@H9slXK6w82mG0YD}elq?mczSD02?UK?ePiMcA3
+zo1p<dTJ%rd;$k8ZOS|e^Xc<0?-Z*>oP2E)akRI^nTfT_KR#*^<_{8A!ebG5y3NB=!
+zl#gi$51V=;@E|Ya0H<8w_?26}RJlUEo#vO%Lj&xFg!te*A?AY}|1^lS^TE&DYxDvw
+zG~jAVlBvb1sPEmb`RF>W4e7VBMp`QmaF+&b2O&e!68e0o0rcBSlLCFl_o%nI(onGE
+zKL)&Ja|$f-0H3B*ng$N?X&J&vQ3L2V<(dW#r0FF=uv^-11QNx7Zp$QgbZ@}}Y}e+B
+zx!-O2jZYx~&P!W!pl}If9g@ZTy0o(n2<T4Iwo47kU`~It=cG;MfRLU^6)>GH8e(C-
+z4qku)*`9l#i3ZW<ybg>4zhn$FfEyrR$}PfX`wOKhK&vCQiFp73002ovPDHLkV1loc
+BnK%Fd
+
+literal 0
+HcmV?d00001
+
+diff --git a/gui/slick/interfaces/default/config_notifications.tmpl b/gui/slick/interfaces/default/config_notifications.tmpl
+index 405a1b4..9922a98 100644
+--- a/gui/slick/interfaces/default/config_notifications.tmpl
++++ b/gui/slick/interfaces/default/config_notifications.tmpl
+@@ -935,6 +935,61 @@
+                     </fieldset>
+                 </div><!-- /nma component-group //-->
+ 
++                <div class="component-group clearfix">
++                    <div class="component-group-desc">
++                        <img class="notifier-icon" src="$sbRoot/images/notifiers/pushalot.png" alt="" title="Pushalot" />
++                        <h3><a href="https://pushalot.com" onclick="window.open(this.href, '_blank'); return false;">Pushalot</a></h3>
++                        <p>Pushalot is a platform for receiving custom push notifications to connected devices running Windows Phone or Windows 8.</p>
++                    </div>
++                    <fieldset class="component-group-list">
++                        <div class="field-pair">
++                            <input type="checkbox" class="enabler" name="use_pushalot" id="use_pushalot" #if $sickbeard.USE_PUSHALOT then "checked=\"checked\"" else ""# />
++                            <label class="clearfix" for="use_pushalot">
++                                <span class="component-title">Enable</span>
++                                <span class="component-desc">Should Sick Beard send notifications through Pushalot?</span>
++                            </label>
++                        </div>
++
++                        <div id="content_use_pushalot">
++                            <div class="field-pair">
++                                <input type="checkbox" name="pushalot_notify_onsnatch" id="pushalot_notify_onsnatch" #if $sickbeard.PUSHALOT_NOTIFY_ONSNATCH then "checked=\"checked\"" else ""# />
++                                <label class="clearfix" for="pushalot_notify_onsnatch">
++                                    <span class="component-title">Notify on Snatch</span>
++                                    <span class="component-desc">Send notification when we start a download?</span>
++                                </label>
++                            </div>
++                            <div class="field-pair">
++                                <input type="checkbox" name="pushalot_notify_ondownload" id="pushalot_notify_ondownload" #if $sickbeard.PUSHALOT_NOTIFY_ONDOWNLOAD then "checked=\"checked\"" else ""# />
++                                <label class="clearfix" for="pushalot_notify_ondownload">
++                                    <span class="component-title">Notify on Download</span>
++                                    <span class="component-desc">Send notification when we finish a download?</span>
++                                </label>
++                            </div>
++                            <div class="field-pair">
++                                <input type="checkbox" name="pushalot_notify_onsubtitledownload" id="pushalot_notify_onsubtitledownload" #if $sickbeard.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD then "checked=\"checked\"" else ""# />
++                                <label class="clearfix" for="pushalot_notify_onsubtitledownload">
++                                    <span class="component-title">Notify on Subtitle Download</span>
++                                    <span class="component-desc">Send notification when we finish a subtitle download?</span>
++                                </label>
++                            </div>
++                            <div class="field-pair">
++                                <label class="nocheck clearfix">
++                                    <span class="component-title">Pushalot Authorization Token</span>
++                                    <input type="text" name="pushalot_authorizationtoken" id="pushalot_authorizationtoken" value="$sickbeard.PUSHALOT_AUTHORIZATIONTOKEN" size="35" />
++                                </label>
++                                <label class="nocheck clearfix">
++                                    <span class="component-title">&nbsp;</span>
++                                    <span class="component-desc">Authorization Token of your Pushalot account</span>
++                                </label>
++                            </div>
++                            <div class="testNotification" id="testPushalot-result">Click below to test.</div>
++                            <input type="button" class="btn" value="Test Pushalot" id="testPushalot" />
++                            <input type="submit" class="btn config_submitter" value="Save Changes" />
++                        </div><!-- /content_use_pushalot //-->
++
++                    </fieldset>
++                </div><!-- /pushalot component-group //-->
++
+ 			</div>
+ 			
+             <div id="tabs-3">
+diff --git a/gui/slick/js/configNotifications.js b/gui/slick/js/configNotifications.js
+index f5a8918..adaa328 100644
+--- a/gui/slick/js/configNotifications.js
++++ b/gui/slick/js/configNotifications.js
+@@ -226,6 +226,12 @@ $(document).ready(function(){
+             function (data) { $('#testNMA-result').html(data); });
+     });
+ 
++    $('#testPushalot').click(function () {
++        $('#testPushalot-result').html(loading);
++        var pushalot_authorizationtoken = $("pushalot_authorizationtoken").val();
++        $.get(sbRoot + "/home/testPushalot", {'authorizationToken': pushalot_authorizationtoken},
++            function (data) { $('#testPushalot-result').html(data); });
++    });
+ 
+     $('#email_show').change(function () {
+         var key = parseInt($('#email_show').val(), 10);
+diff --git a/sickbeard/__init__.py b/sickbeard/__init__.py
+index e65ea26..26ee39c 100644
+--- a/sickbeard/__init__.py
++++ b/sickbeard/__init__.py
+@@ -370,6 +370,12 @@ NMA_NOTIFY_ONSUBTITLEDOWNLOAD = False
+ NMA_API = None
+ NMA_PRIORITY = 0
+ 
++USE_PUSHALOT = False
++PUSHALOT_NOTIFY_ONSNATCH = False
++PUSHALOT_NOTIFY_ONDOWNLOAD = False
++PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD = False
++PUSHALOT_AUTHORIZATIONTOKEN = None
++
+ USE_EMAIL = False
+ EMAIL_NOTIFY_ONSNATCH = False
+ EMAIL_NOTIFY_ONDOWNLOAD = False
+@@ -433,6 +439,7 @@ def initialize(consoleLogging=True):
+                 USE_GROWL, GROWL_HOST, GROWL_PASSWORD, USE_PROWL, PROWL_NOTIFY_ONSNATCH, PROWL_NOTIFY_ONDOWNLOAD, PROWL_NOTIFY_ONSUBTITLEDOWNLOAD, PROWL_API, PROWL_PRIORITY, PROG_DIR, NZBMATRIX, NZBMATRIX_USERNAME, \
+                 USE_PYTIVO, PYTIVO_NOTIFY_ONSNATCH, PYTIVO_NOTIFY_ONDOWNLOAD, PYTIVO_NOTIFY_ONSUBTITLEDOWNLOAD, PYTIVO_UPDATE_LIBRARY, PYTIVO_HOST, PYTIVO_SHARE_NAME, PYTIVO_TIVO_NAME, \
+                 USE_NMA, NMA_NOTIFY_ONSNATCH, NMA_NOTIFY_ONDOWNLOAD, NMA_NOTIFY_ONSUBTITLEDOWNLOAD, NMA_API, NMA_PRIORITY, \
++                USE_PUSHALOT, PUSHALOT_NOTIFY_ONSNATCH, PUSHALOT_NOTIFY_ONDOWNLOAD, PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD, PUSHALOT_AUTHORIZATIONTOKEN, \
+                 NZBMATRIX_APIKEY, versionCheckScheduler, VERSION_NOTIFY, PROCESS_AUTOMATICALLY, \
+                 KEEP_PROCESSED_DIR, TV_DOWNLOAD_DIR, TVDB_BASE_URL, MIN_SEARCH_FREQUENCY, \
+                 showQueueScheduler, searchQueueScheduler, ROOT_DIRS, CACHE_DIR, ACTUAL_CACHE_DIR, TVDB_API_PARMS, \
+@@ -472,6 +479,7 @@ def initialize(consoleLogging=True):
+         CheckSection(CFG, 'SynologyNotifier')
+         CheckSection(CFG, 'pyTivo')
+         CheckSection(CFG, 'NMA')
++        CheckSection(CFG, 'Pushalot')
+         CheckSection(CFG, 'Subtitles')
+ 
+         LOG_DIR = check_setting_str(CFG, 'General', 'log_dir', 'Logs')
+@@ -775,6 +783,12 @@ def initialize(consoleLogging=True):
+         NMA_API = check_setting_str(CFG, 'NMA', 'nma_api', '')
+         NMA_PRIORITY = check_setting_str(CFG, 'NMA', 'nma_priority', "0")
+ 
++        USE_PUSHALOT = bool(check_setting_int(CFG, 'Pushalot', 'use_pushalot', 0))
++        PUSHALOT_NOTIFY_ONSNATCH = bool(check_setting_int(CFG, 'Pushalot', 'pushalot_notify_onsnatch', 0))
++        PUSHALOT_NOTIFY_ONDOWNLOAD = bool(check_setting_int(CFG, 'Pushalot', 'pushalot_notify_ondownload', 0))
++        PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD = bool(check_setting_int(CFG, 'Pushalot', 'pushalot_notify_onsubtitledownload', 0))
++        PUSHALOT_AUTHORIZATIONTOKEN = check_setting_str(CFG, 'Pushalot', 'pushalot_authorizationtoken', '')
++
+         USE_EMAIL = bool(check_setting_int(CFG, 'Email', 'use_email', 0))
+         EMAIL_NOTIFY_ONSNATCH = bool(check_setting_int(CFG, 'Email', 'email_notify_onsnatch', 0))
+         EMAIL_NOTIFY_ONDOWNLOAD = bool(check_setting_int(CFG, 'Email', 'email_notify_ondownload', 0))
+@@ -1464,6 +1478,13 @@ def save_config():
+     new_config['NMA']['nma_api'] = NMA_API
+     new_config['NMA']['nma_priority'] = NMA_PRIORITY
+ 
++    new_config['Pushalot'] = {}
++    new_config['Pushalot']['use_pushalot'] = int(USE_PUSHALOT)
++    new_config['Pushalot']['pushalot_notify_onsnatch'] = int(PUSHALOT_NOTIFY_ONSNATCH)
++    new_config['Pushalot']['pushalot_notify_ondownload'] = int(PUSHALOT_NOTIFY_ONDOWNLOAD)
++    new_config['Pushalot']['pushalot_notify_onsubtitledownload'] = int(PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD)
++    new_config['Pushalot']['pushalot_authorizationtoken'] = PUSHALOT_AUTHORIZATIONTOKEN
++
+     new_config['Email'] = {}
+     new_config['Email']['use_email'] = int(USE_EMAIL)
+     new_config['Email']['email_notify_onsnatch'] = int(EMAIL_NOTIFY_ONSNATCH)
+diff --git a/sickbeard/notifiers/__init__.py b/sickbeard/notifiers/__init__.py
+index ea66619..0079921 100644
+--- a/sickbeard/notifiers/__init__.py
++++ b/sickbeard/notifiers/__init__.py
+@@ -33,6 +33,7 @@ from . import libnotify
+ import pushover
+ import boxcar
+ import nma
++import pushalot
+ 
+ import tweet
+ import trakt
+@@ -56,6 +57,7 @@ libnotify_notifier = libnotify.LibnotifyNotifier()
+ pushover_notifier = pushover.PushoverNotifier()
+ boxcar_notifier = boxcar.BoxcarNotifier()
+ nma_notifier = nma.NMA_Notifier()
++pushalot_notifier = pushalot.PushalotNotifier()
+ # online
+ twitter_notifier = tweet.TwitterNotifier()
+ trakt_notifier = trakt.TraktNotifier()
+@@ -76,6 +78,7 @@ notifiers = [
+     pushover_notifier,
+     boxcar_notifier,
+     nma_notifier,
++    pushalot_notifier,
+     twitter_notifier,
+     trakt_notifier,
+     email_notifier,
+diff --git a/sickbeard/notifiers/pushalot.py b/sickbeard/notifiers/pushalot.py
+new file mode 100644
+index 0000000..a5a1592
+--- /dev/null
++++ b/sickbeard/notifiers/pushalot.py
+@@ -0,0 +1,91 @@
++# Author: Maciej Olesinski (https://github.com/molesinski/)
++# Based on prowl.py by Nic Wolfe <nic@wolfeden.ca>
++# URL: http://code.google.com/p/sickbeard/
++#
++# This file is part of Sick Beard.
++#
++# Sick Beard is free software: you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation, either version 3 of the License, or
++# (at your option) any later version.
++#
++# Sick Beard is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#  GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with Sick Beard.  If not, see <http://www.gnu.org/licenses/>.
++
++from httplib import HTTPSConnection, HTTPException
++from urllib import urlencode
++
++try:
++    # this only exists in 2.6
++    from ssl import SSLError
++except ImportError:
++    # make a fake one since I don't know what it is supposed to be in 2.5
++    class SSLError(Exception):
++        pass
++
++import sickbeard
++
++from sickbeard import logger, common
++
++class PushalotNotifier:
++
++    def test_notify(self, pushalot_authorizationtoken):
++        return self._sendPushalot(pushalot_authorizationtoken, event="Test", message="Testing Pushalot settings from Sick Beard", force=True)
++
++    def notify_snatch(self, ep_name):
++        if sickbeard.PUSHALOT_NOTIFY_ONSNATCH:
++            self._sendPushalot(pushalot_authorizationtoken=None, event=common.notifyStrings[common.NOTIFY_SNATCH], message=ep_name)
++
++    def notify_download(self, ep_name):
++        if sickbeard.PUSHALOT_NOTIFY_ONDOWNLOAD:
++            self._sendPushalot(pushalot_authorizationtoken=None, event=common.notifyStrings[common.NOTIFY_DOWNLOAD], message=ep_name)
++
++    def notify_subtitle_download(self, ep_name, lang):
++        if sickbeard.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD:
++            self._sendPushalot(pushalot_authorizationtoken=None, event=common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD], message=ep_name + ": " + lang)
++
++    def _sendPushalot(self, pushalot_authorizationtoken=None, event=None, message=None, force=False):
++        
++        if not sickbeard.USE_PUSHALOT and not force:
++                return False
++        
++        if pushalot_authorizationtoken == None:
++            pushalot_authorizationtoken = sickbeard.PUSHALOT_AUTHORIZATIONTOKEN
++        
++        logger.log(u"Pushalot event: " + event, logger.DEBUG)
++        logger.log(u"Pushalot message: " + message, logger.DEBUG)
++        logger.log(u"Pushalot api: " + pushalot_authorizationtoken, logger.DEBUG)
++        
++        http_handler = HTTPSConnection("pushalot.com")
++                                                
++        data = {'AuthorizationToken': pushalot_authorizationtoken,
++                'Title': event.encode('utf-8'),
++                'Body': message.encode('utf-8') }
++
++        try:
++            http_handler.request("POST",
++                                    "/api/sendmessage",
++                                    headers = {'Content-type': "application/x-www-form-urlencoded"},
++                                    body = urlencode(data))
++        except (SSLError, HTTPException):
++            logger.log(u"Pushalot notification failed.", logger.ERROR)
++            return False
++        response = http_handler.getresponse()
++        request_status = response.status
++
++        if request_status == 200:
++                logger.log(u"Pushalot notifications sent.", logger.DEBUG)
++                return True
++        elif request_status == 410: 
++                logger.log(u"Pushalot auth failed: %s" % response.reason, logger.ERROR)
++                return False
++        else:
++                logger.log(u"Pushalot notification failed.", logger.ERROR)
++                return False
++                
++notifier = PushalotNotifier
+diff --git a/sickbeard/webserve.py b/sickbeard/webserve.py
+index 684bcd3..b4c137e 100644
+--- a/sickbeard/webserve.py
++++ b/sickbeard/webserve.py
+@@ -1473,6 +1473,7 @@ class ConfigNotifications:
+                           use_pytivo=None, pytivo_notify_onsnatch=None, pytivo_notify_ondownload=None, pytivo_notify_onsubtitledownload=None, pytivo_update_library=None, 
+                           pytivo_host=None, pytivo_share_name=None, pytivo_tivo_name=None,
+                           use_nma=None, nma_notify_onsnatch=None, nma_notify_ondownload=None, nma_notify_onsubtitledownload=None, nma_api=None, nma_priority=0,
++                          use_pushalot=None, pushalot_notify_onsnatch=None, pushalot_notify_ondownload=None, pushalot_notify_onsubtitledownload=None, pushalot_authorizationtoken=None,
+                           use_email=None, email_notify_onsnatch=None, email_notify_ondownload=None, email_notify_onsubtitledownload=None, email_host=None, email_port=25, email_from=None,
+                           email_tls=None, email_user=None, email_password=None, email_list=None, email_show_list=None, email_show=None ):
+ 
+@@ -1788,6 +1789,26 @@ class ConfigNotifications:
+         else:
+             nma_notify_onsubtitledownload = 0
+ 
++        if use_pushalot == "on":
++            use_pushalot = 1
++        else:
++            use_pushalot = 0
++
++        if pushalot_notify_onsnatch == "on":
++            pushalot_notify_onsnatch = 1
++        else:
++            pushalot_notify_onsnatch = 0
++
++        if pushalot_notify_ondownload == "on":
++            pushalot_notify_ondownload = 1
++        else:
++            pushalot_notify_ondownload = 0
++
++        if pushalot_notify_onsubtitledownload == "on":
++            pushalot_notify_onsubtitledownload = 1
++        else:
++            pushalot_notify_onsubtitledownload = 0
++
+         sickbeard.USE_XBMC = use_xbmc
+         sickbeard.XBMC_NOTIFY_ONSNATCH = xbmc_notify_onsnatch
+         sickbeard.XBMC_NOTIFY_ONDOWNLOAD = xbmc_notify_ondownload
+@@ -1905,7 +1926,13 @@ class ConfigNotifications:
+         sickbeard.NMA_NOTIFY_ONSUBTITLEDOWNLOAD = nma_notify_onsubtitledownload
+         sickbeard.NMA_API = nma_api
+         sickbeard.NMA_PRIORITY = nma_priority
+-        
++
++        sickbeard.USE_PUSHALOT = use_pushalot
++        sickbeard.PUSHALOT_NOTIFY_ONSNATCH = pushalot_notify_onsnatch
++        sickbeard.PUSHALOT_NOTIFY_ONDOWNLOAD = pushalot_notify_ondownload
++        sickbeard.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD = pushalot_notify_onsubtitledownload
++        sickbeard.PUSHALOT_AUTHORIZATIONTOKEN = pushalot_authorizationtoken
++
+         sickbeard.save_config()
+ 
+         if len(results) > 0:
+@@ -2762,6 +2789,16 @@ class Home:
+             return "Test NMA notice failed"
+ 
+     @cherrypy.expose
++    def testPushalot(self, authorizationToken=None):
++        cherrypy.response.headers['Cache-Control'] = "max-age=0,no-cache,no-store"
++
++        result = notifiers.pushalot_notifier.test_notify(authorizationToken)
++        if result:
++            return "Pushalot notification succeeded. Check your Pushalot clients to make sure it worked"
++        else:
++            return "Error sending Pushalot notification"
++
++    @cherrypy.expose
+     def shutdown(self, pid=None):
+ 
+         if str(pid) != str(sickbeard.PID):
+-- 
+1.7.9.6 (Apple Git-31.1)
+
